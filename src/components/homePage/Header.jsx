@@ -10,7 +10,6 @@ const Header = () => {
             <button className={styles.header__liked}>
                 <img src={liked} alt="Liked images" className={styles.header__liked__img} />
             </button>
-            
         </header>
     </>
 }

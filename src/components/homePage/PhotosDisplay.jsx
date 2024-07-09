@@ -1,6 +1,6 @@
 const PhotosDisplay = () => {
     return <>
-    
+
     </>
 
 };
