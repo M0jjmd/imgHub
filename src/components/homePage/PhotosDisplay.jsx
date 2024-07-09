@@ -1,6 +1,8 @@
-export default function PhotosDisplay() {
+const PhotosDisplay = () => {
     return <>
     
     </>
 
 };
+
+export default PhotosDisplay

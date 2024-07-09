@@ -1,4 +1,4 @@
-export default function Footer() {
+const Footer = () => {
     return <>
         <ul className="footer__links">
             <li><a href="#">About</a></li>
@@ -15,3 +15,5 @@ export default function Footer() {
         </div>
     </>
 }
+
+export default Footer
