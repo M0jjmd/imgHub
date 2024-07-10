@@ -24,16 +24,14 @@ export const PhotosDisplay = () => {
 
     if(isLoading) {
         return (
-        
             <>
                 <h1>Loading</h1>
             </>
         )
     } else {
         return (
-        
             <>
-                <h1>Not loading</h1>
+                {isLoading ? <p>Loading</p> : photosData.map((el) => <img src={el.urls.raw} alt={el.alternative_slugs.es}/>)}
             </>
         )
     }
