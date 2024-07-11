@@ -12,7 +12,7 @@ export const SearchPhotos = createAsyncThunk("searchPhotos/searchPhotosList", as
             const json = await req.json()
             console.log(json.results)
             return json.results
-            
+
         }
     } catch (error) {
         console.error('Error al enviar los datos:', error)
