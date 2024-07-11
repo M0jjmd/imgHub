@@ -25,4 +25,4 @@ export const SearchPhotosSlice = createSlice({
     }
 })
 
-export const searchPhotosData = (state) => state.photos.data
+export const searchPhotosData = (state) => state.searchPhotos.data

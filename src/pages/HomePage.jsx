@@ -14,15 +14,19 @@ import { SearchPhotos } from "../features/searchPhotos/searchPhotosThunk"
 const HomePage = () => {
     const dispatch = useDispatch()
     const photosData = useSelector(getPhotosData)
+    const getSearchPhotosData = useSelector(searchPhotosData)
+
     const photosStatus = useSelector((state) => state.photos.status)
     const [isLoading, setIsLoading] = useState(true)
+
+
 
     useEffect(() => {
         if (photosStatus === "idle") {
             console.log(dispatch(GetPhotos()));
 
         } else if (photosStatus === "fulfilled") {
-            console.log(photosData)
+            // console.log(photosData)
             setIsLoading(false);
         }
     }, [photosStatus]);
@@ -31,8 +35,9 @@ const HomePage = () => {
     const searchInputHandler = (event) => {
         const userInput = event.target.value
         // const filteredPhotos = 
-        dispatch
-
+        if (userInput) {
+            dispatch(SearchPhotos(userInput))
+        }
     }
 
     return (
@@ -41,7 +46,12 @@ const HomePage = () => {
             <>
                 <body>
                     <section className={styles.section}>
-                        <input type="text" onChange={searchInputHandler} />
+                        <input
+                            type="text"
+                            placeholder="Search for images..."
+                            onChange={searchInputHandler}
+                            className={styles.section__input}
+                        />
                         {isLoading ? <p>Loading</p> : photosData.map((el) =>
                             <div className={styles.section__div} >
                                 <img src={el.urls.regular} alt={el.alternative_slugs.es} className={styles.section__div__img} />
