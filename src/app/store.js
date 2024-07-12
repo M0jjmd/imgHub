@@ -1,8 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { PhotosSlice } from "../features/photos/photosSlice";
+import { configureStore } from "@reduxjs/toolkit"
+import photosReducer from "../features/photos/photosSlice"
+import searchPhotosReducer from "../features/photos/searchPhotosSlice"
 
-export const store = configureStore({
+const store = configureStore({
     reducer: {
-        photos: PhotosSlice.reducer
-    }
-})
+        photos: photosReducer,
+        searchPhotos: searchPhotosReducer,
+    },
+});
+
+export default store
