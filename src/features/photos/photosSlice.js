@@ -1,62 +1,43 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { GetPhotos } from "./photosThunk"
 
-export const PhotosSlice = createSlice({
-    name: 'photos',
+const photosSlice = createSlice({
+    name: "photos",
     initialState: {
-        data: [],
-        status: 'idle',
+        photosData: [],
+        status: "idle",
+        page: 1,
         error: null,
-        loaded: false  // Nuevo estado para indicar si los datos ya están cargados
     },
-    reducers: {},
+    reducers: {
+        aumentPage: (state) => {
+            state.page++
+        },
+        resetPhotos: (state) => {
+            state.photosData = []
+            state.page = 1
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(GetPhotos.pending, (state) => {
-                state.status = 'pending'
+                state.status = "loading"
             })
             .addCase(GetPhotos.fulfilled, (state, action) => {
-                state.status = 'fulfilled'
-                state.data = action.payload
-                state.loaded = true  // Indicamos que los datos se han cargado correctamente
+                state.status = "succeeded"
+                state.photosData = [...state.photosData, ...action.payload]
             })
             .addCase(GetPhotos.rejected, (state, action) => {
-                state.status = 'rejected'
-                state.error = action.error
-            })
-    }
-})
+                state.status = "failed"
+                state.error = action.error.message
+            });
+    },
+});
 
-export const getPhotosData = (state) => state.photos.data
+export const { aumentPage, resetPhotos } = photosSlice.actions
+
+export const getPhotosData = (state) => state.photos.photosData
 export const getPhotosStatus = (state) => state.photos.status
-export const getPhotosLoaded = (state) => state.photos.loaded
+export const getPhotosPage = (state) => state.photos.page
 
-export default PhotosSlice.reducer
-
-// import { createSlice } from "@reduxjs/toolkit"
-// import { GetPhotos } from "./photosThunk"
-
-// export const PhotosSlice = createSlice({
-//     name: 'photos',
-//     initialState: {
-//         data: [],
-//         status: 'idle',
-//         error: null
-//     },
-//     extraReducers: (builder) => {
-//         builder.addCase(GetPhotos.pending, (state, action) => {
-//             state.status = 'pending'
-//         })
-//         .addCase(GetPhotos.fulfilled, (state, action) => {
-//             state.status = 'fulfilled'
-//             state.data = action.payload
-//         })
-//         .addCase(GetPhotos.rejected, (state, action) => {
-//             state.status = 'rejected'
-//             state.error = action.error
-//         })
-//     }
-// })
-
-// // export default PhotosSlice.reducer
-// export const getPhotosData = (state) => state.photos.data
+export default photosSlice.reducer
