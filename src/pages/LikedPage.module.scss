@@ -149,10 +149,6 @@
                     display: flex;
                     justify-content: flex-end;
 
-                    &__input {
-                        // display: inline-block;
-                    }
-
                     .buttonContainer__button {
                         margin: 0 0.5rem;
                         padding: 5px 10px;
@@ -167,4 +163,8 @@
             }
         }
     }
+}
+
+@media only screen and (min-width: 1000px) {
+
 }

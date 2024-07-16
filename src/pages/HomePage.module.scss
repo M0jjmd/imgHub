@@ -43,27 +43,27 @@
 
     &__div {
         position: relative;
-        margin: 1rem;
-        width: auto;
+        width: 100%;
+        margin-bottom: 10px;
+        break-inside: avoid;
 
         &__img {
-            width: 80%;
-            margin: 0 auto;
-            display: block;
+            width: 100%;
+            border-radius: 15px;
         }
 
         &__buttonContainer {
             position: absolute;
             top: 3%;
-            right: 13%;
+            right: 5%;
             display: flex;
             flex-direction: column;
             gap: 5px;
 
             &__button {
                 margin: 0;
-                padding: 5px 10px;
-                background-color: rgba(0, 0, 0, 0.5);
+                padding: 0.3rem 0.3rem;
+                background-color: #EDF0F2;
                 color: white;
                 border: none;
                 cursor: pointer;
@@ -87,6 +87,7 @@
             outline: none;
             padding: 0.3rem;
             background-color: #EDF0F2;
+            width: 100%;
         }
     }
 
@@ -115,6 +116,36 @@
             &__img {
                 width: 100%;
                 height: auto;
+            }
+        }
+    }
+}
+
+.photosContainer {
+    width: 90%;
+    margin: 2rem auto;
+    columns: 2;
+}
+
+
+@media only screen and (min-width: 1000px) {
+    .photosContainer {
+        width: 90%;
+        margin: 2rem auto;
+        columns: 4;
+        column-gap: 2rem;
+    }
+
+    .section {
+
+        &__div {
+            width: 100%;
+            margin-bottom: 10px;
+            break-inside: avoid;
+
+            &__img {
+                width: 100%;
+                border-radius: 15px;
             }
         }
     }

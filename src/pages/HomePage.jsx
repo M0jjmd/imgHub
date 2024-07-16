@@ -1,9 +1,11 @@
 import Footer from "../components/homePage/Footer"
 import styles from './HomePage.module.scss'
-import searchLogo from "../assets/searchLogo.png"
 
+import searchLogo from "../assets/searchLogo.png"
 import logo from '../assets/logo.png'
 import liked from '../assets/liked.png'
+import downloadImg from '../assets/download.png'
+import close from '../assets/x.png'
 
 import { saveAs } from 'file-saver'
 
@@ -127,22 +129,28 @@ const HomePage = () => {
                     <p>Loading...</p>
                 ) : (
                     <>
-                        {displayedPhotos.map((el) => (
-                            el.id ? (
-                                <div key={el.id} className={styles.section__div}>
-                                    <img
-                                        src={el.urls.regular}
-                                        alt={el.alt_description}
-                                        className={styles.section__div__img}
-                                        onClick={() => handleImageClick(el)}
-                                    />
-                                    <div className={styles.section__div__buttonContainer}>
-                                        <button onClick={() => handleLiked(el)} className={styles.section__div__buttonContainer__button}>Like</button>
-                                        <button onClick={() => handleDownload(el.urls.full)} className={styles.section__div__buttonContainer__button}>Download</button>
+                        <div className={styles.photosContainer}>
+                            {displayedPhotos.map((el) => (
+                                el.id ? (
+                                    <div key={el.id} className={styles.section__div}>
+                                        <img
+                                            src={el.urls.regular}
+                                            alt={el.alt_description}
+                                            className={styles.section__div__img}
+                                            onClick={() => handleImageClick(el)}
+                                        />
+                                        <div className={styles.section__div__buttonContainer}>
+                                            <button onClick={() => handleLiked(el)} className={styles.section__div__buttonContainer__button}>
+                                                <img src={liked} alt={el.alt_description} />
+                                            </button>
+                                            <button onClick={() => handleDownload(el.urls.full)} className={styles.section__div__buttonContainer__button}>
+                                                <img src={downloadImg} alt={el.alt_description} />
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                            ) : null
-                        ))}
+                                ) : null
+                            ))}
+                        </div>
                         <button onClick={handleShowMore} className={styles.showMoreButton}>
                             Show More
                         </button>
@@ -151,7 +159,9 @@ const HomePage = () => {
                 {isModalOpen && (
                     <div className={styles.section__modal}>
                         <div className={styles.section__modal__modalContent}>
-                            <span className={styles.close} onClick={handleCloseModal}>&times</span>
+                            <span className={styles.close} onClick={handleCloseModal}>
+                                <img src={close} alt="Gallery" className={styles.header__gallery__img} />
+                            </span>
                             <img src={selectedImage.urls.regular} alt={selectedImage.alt_description} className={styles.section__modal__modalContent__img} />
                         </div>
                     </div>

@@ -77,6 +77,23 @@ const LikedPage = () => {
         }
     }
 
+    const handleDelete = (id) => {
+        // Retrieve the list of items from local storage
+        const savedPhotos = JSON.parse(localStorage.getItem("savedPhotos")) || [];
+        
+        // Filter out the item with the specified id
+        const updatedPhotos = savedPhotos.filter(photo => photo.id !== id);
+        
+        // Save the updated list back to local storage
+        localStorage.setItem("savedPhotos", JSON.stringify(updatedPhotos));
+        
+        // Update the state to reflect the changes
+        setPhotos(updatedPhotos);
+        
+        // Optionally, close the modal if it's open
+        handleCloseModal();
+    };
+
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value)
     }
@@ -187,7 +204,7 @@ const LikedPage = () => {
                                     ) : (
                                         <button onClick={() => setIsEditing(true)} className={styles.buttonContainer__button}>Edit</button>
                                     )}
-                                    <button onClick={() => handleDelete(el.urls.full)} className={styles.buttonContainer__button}>delete</button>
+                                    <button onClick={() => handleDelete(el.id)} className={styles.buttonContainer__button}>delete</button>
                                 </div>
                             </div>
                         </div>

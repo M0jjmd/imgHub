@@ -6,9 +6,9 @@ export const GetPhotos = createAsyncThunk("photos/getPhotos", async ({ page = 1,
     try {
         let req
         if (query) {
-            req = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=5&page=${page}&client_id=${UNSPLASH_ACCESS_KEY}`)
+            req = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=20&page=${page}&client_id=${UNSPLASH_ACCESS_KEY}`)
         } else {
-            req = await fetch(`https://api.unsplash.com/photos?per_page=5&page=${page}&client_id=${UNSPLASH_ACCESS_KEY}`)
+            req = await fetch(`https://api.unsplash.com/photos?per_page=20&page=${page}&client_id=${UNSPLASH_ACCESS_KEY}`)
         }
         if (req.ok) {
             const json = await req.json()
