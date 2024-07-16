@@ -12,15 +12,17 @@ import close from '../assets/x.png'
 
 const LikedPage = () => {
     const [likedPhotos, setLikedPhotos] = useState([])
-
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedImage, setSelectedImage] = useState(null)
+    const [newDescription, setNewDescription] = useState('')
+    const [isEditing, setIsEditing] = useState(false)
+    const [orderBy, setOrderBy] = useState('likes')
 
     useEffect(() => {
         const likedPhotosFromStorage = JSON.parse(localStorage.getItem("likedPhotos")) || []
         setLikedPhotos(likedPhotosFromStorage)
         console.log(likedPhotosFromStorage)
-    }, [])
+    }, [setIsEditing])
 
     const handleImageClick = (photo) => {
         setSelectedImage(photo)
@@ -30,6 +32,48 @@ const LikedPage = () => {
     const handleCloseModal = () => {
         setIsModalOpen(false)
         setSelectedImage(null)
+    }
+
+    const handleOrderByChange = (event) => {
+        setOrderBy(event.target.value)
+        // Ordenar las fotos según el nuevo criterio seleccionado
+        const sortedPhotos = [...likedPhotos].sort((a, b) => {
+            switch (event.target.value) {
+                case 'likes':
+                    return b.likes - a.likes
+                case 'width':
+                    return b.width - a.width
+                case 'height':
+                    return b.height - a.height
+                default:
+                    return 0
+            }
+        })
+        setLikedPhotos(sortedPhotos)
+    }
+
+    const handleEdit = () => {
+        if (selectedImage) {
+            if (newDescription) {
+                const savedPhotos = JSON.parse(localStorage.getItem("likedPhotos")) || []
+                const updatedPhotos = savedPhotos.map(photo => {
+                    if (photo.id === selectedImage.id) {
+                        console.log('el map: ' + photo.id + 'Imagen seleccionada: ' + selectedImage.id)
+                        console.log(newDescription)
+                        return { ...photo, alt_description: newDescription }
+                    }
+                    return photo
+                })
+
+                localStorage.setItem("likedPhotos", JSON.stringify(updatedPhotos))
+                setLikedPhotos(updatedPhotos)
+                setIsEditing(false)
+                setIsModalOpen(false)
+                setSelectedImage(null)
+            } else {
+                setIsEditing(false)
+            }
+        }
     }
 
     return (
@@ -45,7 +89,18 @@ const LikedPage = () => {
             </header>
             {/* <Header /> */}
             <section className={styles.section}>
+
                 <h2>Saved Photos</h2>
+
+                <div className={styles.orderBySelector}>
+                    <label htmlFor="orderBy">Order by:</label>
+                    <select id="orderBy" value={orderBy} onChange={handleOrderByChange}>
+                        <option value="likes">Likes</option>
+                        <option value="width">Width</option>
+                        <option value="height">Height</option>
+                    </select>
+                </div>
+
                 {likedPhotos.length > 0 ? (
                     likedPhotos.map((photo) => (
                         <div key={photo.id} className={styles.section__div}>
@@ -76,6 +131,25 @@ const LikedPage = () => {
                                 <div className={styles.section__modal__modalContent__info__length}>
                                     <img src={length} alt="" className={styles.lenghtInfo} />
                                     <p className={styles.lenghtInfo}>height: {selectedImage.height} </p>
+                                </div>
+                                <div className={styles.section__modal__modalContent__info__buttonContainer}>
+                                    {isEditing ? (
+                                        <div className={styles.section__modal__modalContent__info__buttonContainer__input}>
+                                            <input
+                                                type="text"
+                                                value={newDescription}
+                                                onChange={(e) => setNewDescription(e.target.value)}
+                                                className={styles.section__modal__modalContent__info__input}
+                                            />
+                                            <button onClick={handleEdit} className={styles.section__div__buttonContainer__button}>Save</button>
+                                        </div>
+                                    ) : (
+                                        // <div className={styles.buttonContainer__divs}>
+                                        //     <button onClick={() => setIsEditing(true)} className={styles.section__div__buttonContainer__button}>Edit</button>
+                                        // </div>
+                                        <button onClick={() => setIsEditing(true)} className={styles.buttonContainer__button}>Edit</button>
+                                    )}
+                                    <button onClick={() => handleDelete(el.urls.full)} className={styles.buttonContainer__button}>delete</button>
                                 </div>
                             </div>
                         </div>
