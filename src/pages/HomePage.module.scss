@@ -1,6 +1,39 @@
-html,
-body {
-    min-width: 370px;
+.header {
+    text-align: center;
+    border-bottom: 1px solid #E5E8EB;
+    position: relative;
+
+    &__div {
+        margin: 0.5rem 0;
+    }
+
+    &__logo {
+        display: inline;
+        margin-right: 0.2rem;
+    }
+
+    &__title {
+        display: inline;
+        margin-bottom: 2rem;
+        margin-left: 0.2rem;
+        font-family: 'Open sans';
+        font-weight: bold;
+        font-size: 1.3rem;
+    }
+
+    &__liked {
+        border: none;
+        background: none;
+        position: absolute;
+        right: 0.3rem;
+        top: 0;
+        background-color: #EDF0F2;
+        border-radius: 3px;
+
+        &__img {
+            margin: 0.3rem;
+        }
+    }
 }
 
 .section {
@@ -21,8 +54,8 @@ body {
 
         &__buttonContainer {
             position: absolute;
-            top: 2rem;
-            right: 3rem;
+            top: 3%;
+            right: 13%;
             display: flex;
             flex-direction: column;
             gap: 5px;
@@ -46,15 +79,13 @@ body {
         border: 1px solid #ccc;
         border-radius: 5px;
         padding: 0.3rem;
-        width: 100%;
-        margin: 1rem auto;
+        margin: 1rem;
         background-color: #EDF0F2;
 
         &__input {
             border: none;
             outline: none;
-            flex-grow: 1;
-            padding: 1rem;
+            padding: 0.3rem;
             background-color: #EDF0F2;
         }
     }

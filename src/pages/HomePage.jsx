@@ -1,16 +1,19 @@
-import Header from "../components/homePage/Header"
 import Footer from "../components/homePage/Footer"
 import styles from './HomePage.module.scss'
 import searchLogo from "../assets/searchLogo.png"
 
+import logo from '../assets/logo.png'
+import liked from '../assets/liked.png'
+
 import { saveAs } from 'file-saver'
 
 import { useDispatch, useSelector } from "react-redux"
+import { NavLink } from 'react-router-dom';
 import { useEffect, useState } from "react"
 
 import { getPhotosData, getPhotosStatus, getPhotosPage, aumentPage, resetPhotos } from "../features/photos/photosSlice"
 import { GetPhotos } from "../features/photos/photosThunk"
-import { searchPhotosData, getSearchPhotosStatus, getSearchPhotosPage, clearSearchPhotos, incrementSearchPage } from "../features/photos/searchPhotosSlice"
+import { searchPhotosData, getSearchPhotosPage, clearSearchPhotos, incrementSearchPage } from "../features/photos/searchPhotosSlice"
 
 const HomePage = () => {
     const dispatch = useDispatch()
@@ -20,7 +23,6 @@ const HomePage = () => {
     const photosPage = useSelector(getPhotosPage)
 
     const searchResults = useSelector(searchPhotosData)
-    const searchStatus = useSelector(getSearchPhotosStatus)
     const searchPage = useSelector(getSearchPhotosPage)
 
     const [isLoading, setIsLoading] = useState(true)
@@ -44,14 +46,6 @@ const HomePage = () => {
         console.log("fulfilled")
         console.log(photosStatus)
     }, [photosStatus])
-
-    /*    useEffect(() => {
-            if (searchStatus === "idle") {
-                // setIsLoading(true)
-            } else if (searchStatus === "fulfilled") {
-                setIsLoading(false)
-            }
-        }, [searchStatus]) */
 
     const searchInputHandler = (event) => {
         const userInput = event.target.value
@@ -89,14 +83,6 @@ const HomePage = () => {
     }
 
     const handleLiked = (photo) => {
-        // const savedPhotos = JSON.parse(localStorage.getItem("savedPhotos")) || []
-        // const photoExists = savedPhotos.some(savedPhoto => savedPhoto.id === photo.id)
-        // if (!photoExists) {
-        //     const updatedSavedPhotos = [...savedPhotos, photo]
-        //     localStorage.setItem("savedPhotos", JSON.stringify(updatedSavedPhotos))
-        // } else {
-        //     console.log("This photo is already saved.")
-        // }
         const likedPhotos = JSON.parse(localStorage.getItem("likedPhotos")) || []
         const photoExists = likedPhotos.some(likedPhoto => likedPhoto.id === photo.id)
         if (!photoExists) {
@@ -116,7 +102,15 @@ const HomePage = () => {
     console.log(displayedPhotos)
     return (
         <>
-            <Header />
+            <header className={styles.header}>
+                <div className={styles.header__div}>
+                    <img src={logo} alt="Logo" className={styles.header__logo} />
+                    <h1 className={styles.header__title}>imgHub</h1>
+                    <NavLink className={styles.header__liked} to="liked">
+                        <img src={liked} alt="Liked images" className={styles.header__liked__img} />
+                    </NavLink>
+                </div>
+            </header>
 
             <section className={styles.section}>
                 <div className={styles.section__searchContainer}>
