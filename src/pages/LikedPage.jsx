@@ -8,6 +8,7 @@ import logo from '../assets/logo.png'
 import liked from '../assets/mainPageLogo.png'
 import length from '../assets/length.png'
 import close from '../assets/x.png'
+import searchLogo from "../assets/searchLogo.png"
 
 
 const LikedPage = () => {
@@ -17,6 +18,7 @@ const LikedPage = () => {
     const [newDescription, setNewDescription] = useState('')
     const [isEditing, setIsEditing] = useState(false)
     const [orderBy, setOrderBy] = useState('likes')
+    const [searchTerm, setSearchTerm] = useState('')
 
     useEffect(() => {
         const likedPhotosFromStorage = JSON.parse(localStorage.getItem("likedPhotos")) || []
@@ -36,7 +38,6 @@ const LikedPage = () => {
 
     const handleOrderByChange = (event) => {
         setOrderBy(event.target.value)
-        // Ordenar las fotos según el nuevo criterio seleccionado
         const sortedPhotos = [...likedPhotos].sort((a, b) => {
             switch (event.target.value) {
                 case 'likes':
@@ -76,6 +77,10 @@ const LikedPage = () => {
         }
     }
 
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value)
+    }
+
     return (
         <>
             <header className={styles.header}>
@@ -87,8 +92,18 @@ const LikedPage = () => {
                     </NavLink>
                 </div>
             </header>
-            {/* <Header /> */}
+
             <section className={styles.section}>
+                <div className={styles.section__searchContainer}>
+                    <img src={searchLogo} alt="Logo" className={styles.section__searchContainer__searchLogo} />
+                    <input
+                        type="text"
+                        placeholder="Search for images..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        className={styles.section__searchContainer__input}
+                    />
+                </div>
 
                 <h2>Saved Photos</h2>
 
@@ -101,37 +116,63 @@ const LikedPage = () => {
                     </select>
                 </div>
 
-                {likedPhotos.length > 0 ? (
-                    likedPhotos.map((photo) => (
-                        <div key={photo.id} className={styles.section__div}>
-                            <img
-                                src={photo.urls.regular}
-                                alt={photo.alt_description}
-                                className={styles.section__div__img}
-                                onClick={() => handleImageClick(photo)}
-                            />
-                        </div>
-                    ))
-                ) : (
-                    <p>No saved photos found.</p>
-                )}
+                <div>
+                    {likedPhotos.length > 0 ? (
+                        searchTerm ? (
+
+                            likedPhotos
+                                .filter((photo) => photo.alt_description.toLowerCase().includes(searchTerm.toLowerCase()))
+                                .map((photo) => (
+                                    <div key={photo.id} className={styles.section__div}>
+                                        <img
+                                            src={photo.urls.regular}
+                                            alt={photo.alt_description}
+                                            className={styles.section__div__img}
+                                            onClick={() => handleImageClick(photo)}
+                                        />
+                                    </div>
+                                ))
+                        ) : (
+
+                            likedPhotos.map((photo) => (
+                                <div key={photo.id} className={styles.section__div}>
+                                    <img
+                                        src={photo.urls.regular}
+                                        alt={photo.alt_description}
+                                        className={styles.section__div__img}
+                                        onClick={() => handleImageClick(photo)}
+                                    />
+                                </div>
+                            ))
+                        )
+                    ) : (
+                        <p>No saved photos found.</p>
+                    )}
+                </div>
+
                 {isModalOpen && (
                     <div className={styles.section__modal}>
                         <div className={styles.section__modal__modalContent}>
+
                             <span className={styles.close} onClick={handleCloseModal}>
                                 <img src={close} alt="Gallery" className={styles.header__gallery__img} />
                             </span>
+
                             <img src={selectedImage.urls.regular} alt={selectedImage.alt_description} className={styles.section__modal__modalContent__img} />
+
                             <div className={styles.section__modal__modalContent__info}>
                                 <p>{selectedImage.alt_description}</p>
+
                                 <div className={styles.section__modal__modalContent__info__length}>
                                     <img src={length} alt="" className={styles.lenghtInfo} />
                                     <p className={styles.lenghtInfo}>width: {selectedImage.width} </p>
                                 </div>
+
                                 <div className={styles.section__modal__modalContent__info__length}>
                                     <img src={length} alt="" className={styles.lenghtInfo} />
                                     <p className={styles.lenghtInfo}>height: {selectedImage.height} </p>
                                 </div>
+
                                 <div className={styles.section__modal__modalContent__info__buttonContainer}>
                                     {isEditing ? (
                                         <div className={styles.section__modal__modalContent__info__buttonContainer__input}>
@@ -144,9 +185,6 @@ const LikedPage = () => {
                                             <button onClick={handleEdit} className={styles.section__div__buttonContainer__button}>Save</button>
                                         </div>
                                     ) : (
-                                        // <div className={styles.buttonContainer__divs}>
-                                        //     <button onClick={() => setIsEditing(true)} className={styles.section__div__buttonContainer__button}>Edit</button>
-                                        // </div>
                                         <button onClick={() => setIsEditing(true)} className={styles.buttonContainer__button}>Edit</button>
                                     )}
                                     <button onClick={() => handleDelete(el.urls.full)} className={styles.buttonContainer__button}>delete</button>
@@ -155,6 +193,7 @@ const LikedPage = () => {
                         </div>
                     </div>
                 )}
+
             </section>
             <Footer />
         </>
