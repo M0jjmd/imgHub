@@ -24,7 +24,7 @@ const photosSlice = createSlice({
                 state.status = "loading"
             })
             .addCase(GetPhotos.fulfilled, (state, action) => {
-                state.status = "succeeded"
+                state.status = "fulfilled"
                 state.photosData = [...state.photosData, ...action.payload]
             })
             .addCase(GetPhotos.rejected, (state, action) => {
