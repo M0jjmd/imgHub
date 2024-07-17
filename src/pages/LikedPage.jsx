@@ -5,9 +5,12 @@ import Footer from "../components/homePage/Footer"
 import styles from './LikedPage.module.scss'
 
 import logo from '../assets/logo.png'
-import liked from '../assets/mainPageLogo.png'
+import liked from '../assets/liked.png'
+import mainPageLogo from '../assets/mainPageLogo.png'
 import length from '../assets/length.png'
 import close from '../assets/x.png'
+import edit from '../assets/edit.png'
+import deleteImg from '../assets/deleteLogo.png'
 import searchLogo from "../assets/searchLogo.png"
 
 
@@ -23,7 +26,6 @@ const LikedPage = () => {
     useEffect(() => {
         const likedPhotosFromStorage = JSON.parse(localStorage.getItem("likedPhotos")) || []
         setLikedPhotos(likedPhotosFromStorage)
-        console.log(likedPhotosFromStorage)
     }, [setIsEditing])
 
     const handleImageClick = (photo) => {
@@ -59,8 +61,6 @@ const LikedPage = () => {
                 const savedPhotos = JSON.parse(localStorage.getItem("likedPhotos")) || []
                 const updatedPhotos = savedPhotos.map(photo => {
                     if (photo.id === selectedImage.id) {
-                        console.log('el map: ' + photo.id + 'Imagen seleccionada: ' + selectedImage.id)
-                        console.log(newDescription)
                         return { ...photo, alt_description: newDescription }
                     }
                     return photo
@@ -78,21 +78,12 @@ const LikedPage = () => {
     }
 
     const handleDelete = (id) => {
-        // Retrieve the list of items from local storage
-        const savedPhotos = JSON.parse(localStorage.getItem("savedPhotos")) || [];
-        
-        // Filter out the item with the specified id
-        const updatedPhotos = savedPhotos.filter(photo => photo.id !== id);
-        
-        // Save the updated list back to local storage
-        localStorage.setItem("savedPhotos", JSON.stringify(updatedPhotos));
-        
-        // Update the state to reflect the changes
-        setPhotos(updatedPhotos);
-        
-        // Optionally, close the modal if it's open
-        handleCloseModal();
-    };
+        const savedPhotos = JSON.parse(localStorage.getItem("likedPhotos")) || []
+        const updatedPhotos = savedPhotos.filter(photo => photo.id !== id)
+        localStorage.setItem("likedPhotos", JSON.stringify(updatedPhotos))
+        setLikedPhotos(updatedPhotos)
+        handleCloseModal()
+    }
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value)
@@ -105,7 +96,7 @@ const LikedPage = () => {
                     <img src={logo} alt="Logo" className={styles.header__logo} />
                     <h1 className={styles.header__title}>imgHub</h1>
                     <NavLink className={styles.header__gallery} to="/">
-                        <img src={liked} alt="Gallery" className={styles.header__gallery__img} />
+                        <img src={mainPageLogo} alt="Gallery" className={styles.header__gallery__img} />
                     </NavLink>
                 </div>
             </header>
@@ -124,16 +115,16 @@ const LikedPage = () => {
 
                 <h2>Saved Photos</h2>
 
-                <div className={styles.orderBySelector}>
-                    <label htmlFor="orderBy">Order by:</label>
-                    <select id="orderBy" value={orderBy} onChange={handleOrderByChange}>
+                <div className={styles.section__orderBySelector}>
+                    <label htmlFor="orderBy" className={styles.section__orderBySelector__label}>Order by:</label>
+                    <select id="orderBy" className={styles.section__orderBySelector__select} value={orderBy} onChange={handleOrderByChange} >
                         <option value="likes">Likes</option>
                         <option value="width">Width</option>
                         <option value="height">Height</option>
                     </select>
                 </div>
 
-                <div>
+                <div className={styles.photosContainer}>
                     {likedPhotos.length > 0 ? (
                         searchTerm ? (
 
@@ -170,23 +161,28 @@ const LikedPage = () => {
                 {isModalOpen && (
                     <div className={styles.section__modal}>
                         <div className={styles.section__modal__modalContent}>
-
-                            <span className={styles.close} onClick={handleCloseModal}>
-                                <img src={close} alt="Gallery" className={styles.header__gallery__img} />
-                            </span>
-
+                            <div>
+                                <span className={styles.close} onClick={handleCloseModal}>
+                                    <img src={close} alt="Gallery" className={styles.header__gallery__img} />
+                                </span>
+                            </div>
                             <img src={selectedImage.urls.regular} alt={selectedImage.alt_description} className={styles.section__modal__modalContent__img} />
 
                             <div className={styles.section__modal__modalContent__info}>
-                                <p>{selectedImage.alt_description}</p>
+                                <p className={styles.section__modal__modalContent__info__p}>{selectedImage.alt_description}</p>
 
                                 <div className={styles.section__modal__modalContent__info__length}>
-                                    <img src={length} alt="" className={styles.lenghtInfo} />
+                                    <img src={liked} alt="likes" className={styles.lenghtInfo} />
+                                    <p className={styles.lenghtInfo}>likes: {selectedImage.likes} </p>
+                                </div>
+
+                                <div className={styles.section__modal__modalContent__info__length}>
+                                    <img src={length} alt="width" className={styles.lenghtInfo} />
                                     <p className={styles.lenghtInfo}>width: {selectedImage.width} </p>
                                 </div>
 
                                 <div className={styles.section__modal__modalContent__info__length}>
-                                    <img src={length} alt="" className={styles.lenghtInfo} />
+                                    <img src={length} alt="height" className={styles.lenghtInfo} />
                                     <p className={styles.lenghtInfo}>height: {selectedImage.height} </p>
                                 </div>
 
@@ -202,9 +198,13 @@ const LikedPage = () => {
                                             <button onClick={handleEdit} className={styles.section__div__buttonContainer__button}>Save</button>
                                         </div>
                                     ) : (
-                                        <button onClick={() => setIsEditing(true)} className={styles.buttonContainer__button}>Edit</button>
+                                        <button onClick={() => setIsEditing(true)} className={styles.buttonContainer__button}>
+                                            <img src={edit} alt="edit" className={styles.buttonContainer__button__img} />
+                                        </button>
                                     )}
-                                    <button onClick={() => handleDelete(el.id)} className={styles.buttonContainer__button}>delete</button>
+                                    <button onClick={() => handleDelete(selectedImage.id)} className={styles.buttonContainer__button}>
+                                        <img src={deleteImg} alt="delete" className={styles.buttonContainer__button__img} />
+                                    </button>
                                 </div>
                             </div>
                         </div>

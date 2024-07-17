@@ -39,14 +39,11 @@ const HomePage = () => {
             dispatch(GetPhotos({ page: photosPage, query: "" }))
         } else if (photosStatus === "fulfilled") {
             setIsLoading(false)
-            console.log("fulfilled")
         } else if (photosStatus === "rejected") {
             alert("Error")
         } else if (photosStatus === "pending") {
-            //Mostramos unm spinner
+
         }
-        console.log("fulfilled")
-        console.log(photosStatus)
     }, [photosStatus])
 
     const searchInputHandler = (event) => {
@@ -90,7 +87,6 @@ const HomePage = () => {
         if (!photoExists) {
             const updatedLikedPhotos = [...likedPhotos, photo]
             localStorage.setItem("likedPhotos", JSON.stringify(updatedLikedPhotos))
-            console.log(updatedLikedPhotos)
         } else {
             console.log("This photo is already saved.")
         }
@@ -101,7 +97,6 @@ const HomePage = () => {
     }
 
     const displayedPhotos = isSearching ? searchResults : photosData
-    console.log(displayedPhotos)
     return (
         <>
             <header className={styles.header}>
@@ -159,9 +154,7 @@ const HomePage = () => {
                 {isModalOpen && (
                     <div className={styles.section__modal}>
                         <div className={styles.section__modal__modalContent}>
-                            <span className={styles.close} onClick={handleCloseModal}>
-                                <img src={close} alt="Gallery" className={styles.header__gallery__img} />
-                            </span>
+                            <img src={close} alt="Gallery" className={styles.section__modal__modalContent__closeModal} onClick={handleCloseModal} />
                             <img src={selectedImage.urls.regular} alt={selectedImage.alt_description} className={styles.section__modal__modalContent__img} />
                         </div>
                     </div>
