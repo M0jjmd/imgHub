@@ -4,13 +4,15 @@ import styles from './HomePage.module.scss'
 import searchLogo from "../assets/searchLogo.png"
 import logo from '../assets/logo.png'
 import liked from '../assets/liked.png'
+import heart from '../assets/heart.png'
+import redHeart from '../assets/redHeart.png'
 import downloadImg from '../assets/download.png'
 import close from '../assets/x.png'
 
 import { saveAs } from 'file-saver'
 
 import { useDispatch, useSelector } from "react-redux"
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom'
 import { useEffect, useState } from "react"
 
 import { getPhotosData, getPhotosStatus, getPhotosPage, aumentPage, resetPhotos } from "../features/photos/photosSlice"
@@ -34,6 +36,8 @@ const HomePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedImage, setSelectedImage] = useState(null)
 
+    // const [likedPhoto, setLikedPhotos] = useState([])
+
     useEffect(() => {
         if (photosStatus === "idle") {
             dispatch(GetPhotos({ page: photosPage, query: "" }))
@@ -45,6 +49,12 @@ const HomePage = () => {
 
         }
     }, [photosStatus])
+
+    // useEffect(() => {
+    //     const likedPhotosFromStorage = JSON.parse(localStorage.getItem("likedPhotos")) || []
+    //     setLikedPhotos(likedPhotosFromStorage)
+    //     console.log(likedPhotosFromStorage)
+    // }, [])
 
     const searchInputHandler = (event) => {
         const userInput = event.target.value
@@ -92,6 +102,12 @@ const HomePage = () => {
         }
     }
 
+    const likedPhoto = (photo) => {
+        const likedPhotos = JSON.parse(localStorage.getItem("likedPhotos")) || []
+        const photoExists = likedPhotos.some(likedPhoto => likedPhoto.id === photo.id)
+        return photoExists
+    }
+
     const handleDownload = (photo) => {
         saveAs(photo, `photo-${photo.id}.jpg`)
     }
@@ -136,7 +152,12 @@ const HomePage = () => {
                                         />
                                         <div className={styles.section__div__buttonContainer}>
                                             <button onClick={() => handleLiked(el)} className={styles.section__div__buttonContainer__button}>
-                                                <img src={liked} alt={el.alt_description} />
+                                                <img
+                                                    src={likedPhoto(el) ? heart : redHeart}
+                                                    // src={liked}
+                                                    alt={el.alt_description}
+                                                    className={styles.section__div__buttonContainer__button__heart}
+                                                />
                                             </button>
                                             <button onClick={() => handleDownload(el.urls.full)} className={styles.section__div__buttonContainer__button}>
                                                 <img src={downloadImg} alt={el.alt_description} />
