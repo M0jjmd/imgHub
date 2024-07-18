@@ -4,13 +4,15 @@ import styles from './HomePage.module.scss'
 import searchLogo from "../assets/searchLogo.png"
 import logo from '../assets/logo.png'
 import liked from '../assets/liked.png'
+import heart from '../assets/heart.png'
+import redHeart from '../assets/redHeart.png'
 import downloadImg from '../assets/download.png'
 import close from '../assets/x.png'
 
 import { saveAs } from 'file-saver'
 
 import { useDispatch, useSelector } from "react-redux"
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom'
 import { useEffect, useState } from "react"
 
 import { getPhotosData, getPhotosStatus, getPhotosPage, aumentPage, resetPhotos } from "../features/photos/photosSlice"
@@ -33,6 +35,8 @@ const HomePage = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedImage, setSelectedImage] = useState(null)
+
+    const [changed, setChanged] = useState(false)
 
     useEffect(() => {
         if (photosStatus === "idle") {
@@ -57,7 +61,7 @@ const HomePage = () => {
             setIsSearching(false)
             dispatch(clearSearchPhotos())
             dispatch(resetPhotos())
-            dispatch(GetPhotos({ page: 1 }))
+            dispatch(GetPhotos({ page: 1, query: "" }))
         }
     }
 
@@ -67,7 +71,7 @@ const HomePage = () => {
             dispatch(GetPhotos({ page: searchPage, query: userText }))
         } else {
             dispatch(aumentPage())
-            dispatch(GetPhotos({ page: photosPage }))
+            dispatch(GetPhotos({ page: photosPage, query: "" }))
         }
     }
 
@@ -84,12 +88,25 @@ const HomePage = () => {
     const handleLiked = (photo) => {
         const likedPhotos = JSON.parse(localStorage.getItem("likedPhotos")) || []
         const photoExists = likedPhotos.some(likedPhoto => likedPhoto.id === photo.id)
+
         if (!photoExists) {
-            const updatedLikedPhotos = [...likedPhotos, photo]
+            const likedPhotoWithTimestamp = {
+                ...photo,
+                likedAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            }
+
+            const updatedLikedPhotos = [...likedPhotos, likedPhotoWithTimestamp]
             localStorage.setItem("likedPhotos", JSON.stringify(updatedLikedPhotos))
+            setChanged(!changed)
         } else {
             console.log("This photo is already saved.")
         }
+    }
+
+    const likedPhoto = (photo) => {
+        const likedPhotos = JSON.parse(localStorage.getItem("likedPhotos")) || []
+        const photoExists = likedPhotos.some(likedPhoto => likedPhoto.id === photo.id)
+        return photoExists
     }
 
     const handleDownload = (photo) => {
@@ -134,9 +151,13 @@ const HomePage = () => {
                                             className={styles.section__div__img}
                                             onClick={() => handleImageClick(el)}
                                         />
-                                        <div className={styles.section__div__buttonContainer}>
+                                        <div className={styles.section__div__buttonContainer} >
                                             <button onClick={() => handleLiked(el)} className={styles.section__div__buttonContainer__button}>
-                                                <img src={liked} alt={el.alt_description} />
+                                                <img
+                                                    src={likedPhoto(el) ? heart : redHeart}
+                                                    alt={el.alt_description}
+                                                    className={styles.section__div__buttonContainer__button__heart}
+                                                />
                                             </button>
                                             <button onClick={() => handleDownload(el.urls.full)} className={styles.section__div__buttonContainer__button}>
                                                 <img src={downloadImg} alt={el.alt_description} />
