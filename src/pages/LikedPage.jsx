@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
+import { saveAs } from 'file-saver'
 
 import Footer from "../components/homePage/Footer"
 import styles from './LikedPage.module.scss'
@@ -12,6 +13,7 @@ import close from '../assets/x.png'
 import edit from '../assets/edit.png'
 import deleteImg from '../assets/deleteLogo.png'
 import searchLogo from "../assets/searchLogo.png"
+import downloadImg from '../assets/download.png'
 
 
 const LikedPage = () => {
@@ -30,6 +32,7 @@ const LikedPage = () => {
 
     const handleImageClick = (photo) => {
         setSelectedImage(photo)
+        console.log(photo)
         setIsModalOpen(true)
     }
 
@@ -48,6 +51,8 @@ const LikedPage = () => {
                     return b.width - a.width
                 case 'height':
                     return b.height - a.height
+                case 'date':
+                    return new Date(b.likedAt) - new Date(a.likedAt)
                 default:
                     return 0
             }
@@ -89,6 +94,10 @@ const LikedPage = () => {
         setSearchTerm(event.target.value)
     }
 
+    const handleDownload = (photo) => {
+        saveAs(photo, `photo-${photo.id}.jpg`)
+    }
+
     return (
         <>
             <header className={styles.header}>
@@ -121,6 +130,7 @@ const LikedPage = () => {
                         <option value="likes">Likes</option>
                         <option value="width">Width</option>
                         <option value="height">Height</option>
+                        <option value="date">Date</option>
                     </select>
                 </div>
 
@@ -131,26 +141,37 @@ const LikedPage = () => {
                             likedPhotos
                                 .filter((photo) => photo.alt_description.toLowerCase().includes(searchTerm.toLowerCase()))
                                 .map((photo) => (
-                                    <div key={photo.id} className={styles.section__div}>
+                                    <div key={photo.id} className={styles.photosContainer__div}>
                                         <img
                                             src={photo.urls.regular}
                                             alt={photo.alt_description}
-                                            className={styles.section__div__img}
+                                            className={styles.photosContainer__div__img}
                                             onClick={() => handleImageClick(photo)}
                                         />
+                                        <div className={styles.photosContainer__div__buttonContainer}>
+                                            <button onClick={() => handleDownload(photo.urls.full)} className={styles.photosContainer__div__buttonContainer__downloadImg}>
+                                                <img src={downloadImg} alt={photo.alt_description} />
+                                            </button>
+                                        </div>
                                     </div>
                                 ))
                         ) : (
 
                             likedPhotos.map((photo) => (
-                                <div key={photo.id} className={styles.section__div}>
+                                <div key={photo.id} className={styles.photosContainer__div}>
                                     <img
                                         src={photo.urls.regular}
                                         alt={photo.alt_description}
-                                        className={styles.section__div__img}
+                                        className={styles.photosContainer__div__img}
                                         onClick={() => handleImageClick(photo)}
                                     />
+                                    <div className={styles.photosContainer__div__buttonContainer}>
+                                        <button onClick={() => handleDownload(photo.urls.full)} className={styles.photosContainer__div__buttonContainer__downloadImg}>
+                                            <img src={downloadImg} alt={photo.alt_description} />
+                                        </button>
+                                    </div>
                                 </div>
+
                             ))
                         )
                     ) : (
@@ -184,6 +205,10 @@ const LikedPage = () => {
                                 <div className={styles.section__modal__modalContent__info__length}>
                                     <img src={length} alt="height" className={styles.lenghtInfo} />
                                     <p className={styles.lenghtInfo}>height: {selectedImage.height} </p>
+                                </div>
+
+                                <div className={styles.section__modal__modalContent__info__length}>
+                                    <p className={styles.lenghtInfo}>{selectedImage.likedAt} </p>
                                 </div>
 
                                 <div className={styles.section__modal__modalContent__info__buttonContainer}>

@@ -36,7 +36,7 @@ const HomePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [selectedImage, setSelectedImage] = useState(null)
 
-    // const [likedPhoto, setLikedPhotos] = useState([])
+    const [changed, setChanged] = useState(false)
 
     useEffect(() => {
         if (photosStatus === "idle") {
@@ -50,12 +50,6 @@ const HomePage = () => {
         }
     }, [photosStatus])
 
-    // useEffect(() => {
-    //     const likedPhotosFromStorage = JSON.parse(localStorage.getItem("likedPhotos")) || []
-    //     setLikedPhotos(likedPhotosFromStorage)
-    //     console.log(likedPhotosFromStorage)
-    // }, [])
-
     const searchInputHandler = (event) => {
         const userInput = event.target.value
         setUserText(userInput)
@@ -67,7 +61,7 @@ const HomePage = () => {
             setIsSearching(false)
             dispatch(clearSearchPhotos())
             dispatch(resetPhotos())
-            dispatch(GetPhotos({ page: 1 }))
+            dispatch(GetPhotos({ page: 1, query: "" }))
         }
     }
 
@@ -77,7 +71,7 @@ const HomePage = () => {
             dispatch(GetPhotos({ page: searchPage, query: userText }))
         } else {
             dispatch(aumentPage())
-            dispatch(GetPhotos({ page: photosPage }))
+            dispatch(GetPhotos({ page: photosPage, query: "" }))
         }
     }
 
@@ -94,9 +88,16 @@ const HomePage = () => {
     const handleLiked = (photo) => {
         const likedPhotos = JSON.parse(localStorage.getItem("likedPhotos")) || []
         const photoExists = likedPhotos.some(likedPhoto => likedPhoto.id === photo.id)
+
         if (!photoExists) {
-            const updatedLikedPhotos = [...likedPhotos, photo]
+            const likedPhotoWithTimestamp = {
+                ...photo,
+                likedAt: new Date().toISOString().slice(0, 19).replace('T', ' ')
+            }
+
+            const updatedLikedPhotos = [...likedPhotos, likedPhotoWithTimestamp]
             localStorage.setItem("likedPhotos", JSON.stringify(updatedLikedPhotos))
+            setChanged(!changed)
         } else {
             console.log("This photo is already saved.")
         }
@@ -150,11 +151,10 @@ const HomePage = () => {
                                             className={styles.section__div__img}
                                             onClick={() => handleImageClick(el)}
                                         />
-                                        <div className={styles.section__div__buttonContainer}>
+                                        <div className={styles.section__div__buttonContainer} >
                                             <button onClick={() => handleLiked(el)} className={styles.section__div__buttonContainer__button}>
                                                 <img
                                                     src={likedPhoto(el) ? heart : redHeart}
-                                                    // src={liked}
                                                     alt={el.alt_description}
                                                     className={styles.section__div__buttonContainer__button__heart}
                                                 />
