@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { GetPhotos } from "../photos/photosThunk"
+import { GetPhotos } from "./photosThunk"
 
 const searchPhotosSlice = createSlice({
     name: 'searchPhotos',

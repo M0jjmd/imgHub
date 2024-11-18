@@ -67,11 +67,13 @@ const HomePage = () => {
 
     const handleShowMore = () => {
         if (isSearching) {
+            const nextPage = photosPage + 1
             dispatch(incrementSearchPage())
-            dispatch(GetPhotos({ page: searchPage, query: userText }))
+            dispatch(GetPhotos({ page: nextPage, query: userText }))
         } else {
+            const nextPage = photosPage + 1
             dispatch(aumentPage())
-            dispatch(GetPhotos({ page: photosPage, query: "" }))
+            dispatch(GetPhotos({ page: nextPage, query: "" }))
         }
     }
 
