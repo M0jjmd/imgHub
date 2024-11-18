@@ -6,8 +6,8 @@ const searchPhotosSlice = createSlice({
     initialState: {
         data: [],
         status: 'idle',
-        error: null,
-        page: 1
+        page: 1,
+        error: null
     },
     reducers: {
         incrementSearchPage: (state) => {
@@ -15,8 +15,7 @@ const searchPhotosSlice = createSlice({
         },
         clearSearchPhotos: (state) => {
             state.data = []
-            state.status = 'idle'
-            state.error = null
+            state.page = 1
         }
     },
     extraReducers: (builder) => {
@@ -25,7 +24,7 @@ const searchPhotosSlice = createSlice({
                 state.status = 'loading'
             })
             .addCase(GetPhotos.fulfilled, (state, action) => {
-                state.status = 'succeeded'
+                state.status = 'fulfilled'
                 state.data = [...state.data, ...action.payload]
             })
             .addCase(GetPhotos.rejected, (state, action) => {

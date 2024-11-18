@@ -25,9 +25,8 @@ const HomePage = () => {
     const photosData = useSelector(getPhotosData)
     const photosStatus = useSelector(getPhotosStatus)
     const photosPage = useSelector(getPhotosPage)
-
-    const searchResults = useSelector(searchPhotosData)
     const searchPage = useSelector(getSearchPhotosPage)
+    const searchResults = useSelector(searchPhotosData)
 
     const [isLoading, setIsLoading] = useState(true)
     const [isSearching, setIsSearching] = useState(false)
@@ -59,7 +58,6 @@ const HomePage = () => {
             dispatch(GetPhotos({ page: 1, query: userInput }))
         } else {
             setIsSearching(false)
-            dispatch(clearSearchPhotos())
             dispatch(resetPhotos())
             dispatch(GetPhotos({ page: 1, query: "" }))
         }
@@ -67,11 +65,13 @@ const HomePage = () => {
 
     const handleShowMore = () => {
         if (isSearching) {
-            const nextPage = photosPage + 1
+            const nextPage = searchPage + 1
+            console.log(nextPage + ": paginacion buscando")
             dispatch(incrementSearchPage())
             dispatch(GetPhotos({ page: nextPage, query: userText }))
         } else {
             const nextPage = photosPage + 1
+            console.log(nextPage + ": paginacion sin buscar")
             dispatch(aumentPage())
             dispatch(GetPhotos({ page: nextPage, query: "" }))
         }
