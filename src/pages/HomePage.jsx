@@ -1,3 +1,11 @@
+import { saveAs } from 'file-saver'
+import { useDispatch, useSelector } from "react-redux"
+import { NavLink } from 'react-router-dom'
+import { useEffect, useState } from "react"
+import { getPhotosData, getPhotosStatus, getPhotosPage, aumentPage, resetPhotos } from "../features/photos/photosSlice"
+import { GetPhotos } from "../features/photos/photosThunk"
+import { searchPhotosData, getSearchPhotosPage, clearSearchPhotos, incrementSearchPage } from "../features/photos/searchPhotosSlice"
+
 import Footer from "../components/homePage/Footer"
 import styles from './HomePage.module.scss'
 
@@ -9,25 +17,14 @@ import redHeart from '../assets/redHeart.png'
 import downloadImg from '../assets/download.png'
 import close from '../assets/x.png'
 
-import { saveAs } from 'file-saver'
-
-import { useDispatch, useSelector } from "react-redux"
-import { NavLink } from 'react-router-dom'
-import { useEffect, useState } from "react"
-
-import { getPhotosData, getPhotosStatus, getPhotosPage, aumentPage, resetPhotos } from "../features/photos/photosSlice"
-import { GetPhotos } from "../features/photos/photosThunk"
-import { searchPhotosData, getSearchPhotosPage, clearSearchPhotos, incrementSearchPage } from "../features/photos/searchPhotosSlice"
-
 const HomePage = () => {
     const dispatch = useDispatch()
 
     const photosData = useSelector(getPhotosData)
     const photosStatus = useSelector(getPhotosStatus)
     const photosPage = useSelector(getPhotosPage)
-
-    const searchResults = useSelector(searchPhotosData)
     const searchPage = useSelector(getSearchPhotosPage)
+    const searchResults = useSelector(searchPhotosData)
 
     const [isLoading, setIsLoading] = useState(true)
     const [isSearching, setIsSearching] = useState(false)
@@ -46,7 +43,7 @@ const HomePage = () => {
         } else if (photosStatus === "rejected") {
             alert("Error")
         } else if (photosStatus === "pending") {
-
+            setIsLoading(true)
         }
     }, [photosStatus])
 
@@ -59,7 +56,6 @@ const HomePage = () => {
             dispatch(GetPhotos({ page: 1, query: userInput }))
         } else {
             setIsSearching(false)
-            dispatch(clearSearchPhotos())
             dispatch(resetPhotos())
             dispatch(GetPhotos({ page: 1, query: "" }))
         }
@@ -67,11 +63,13 @@ const HomePage = () => {
 
     const handleShowMore = () => {
         if (isSearching) {
+            const nextPage = searchPage + 1
             dispatch(incrementSearchPage())
-            dispatch(GetPhotos({ page: searchPage, query: userText }))
+            dispatch(GetPhotos({ page: nextPage, query: userText }))
         } else {
+            const nextPage = photosPage + 1
             dispatch(aumentPage())
-            dispatch(GetPhotos({ page: photosPage, query: "" }))
+            dispatch(GetPhotos({ page: nextPage, query: "" }))
         }
     }
 
@@ -139,6 +137,8 @@ const HomePage = () => {
 
                 {isLoading ? (
                     <p>Loading...</p>
+                ) : displayedPhotos.length === 0 ? (
+                    <p>No results found.</p>
                 ) : (
                     <>
                         <div className={styles.photosContainer}>

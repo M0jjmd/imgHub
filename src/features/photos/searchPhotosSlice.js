@@ -1,13 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit"
-import { GetPhotos } from "../photos/photosThunk"
+import { GetPhotos } from "./photosThunk"
 
 const searchPhotosSlice = createSlice({
-    name: 'searchPhotos',
+    name: "searchPhotos",
     initialState: {
         data: [],
-        status: 'idle',
-        error: null,
-        page: 1
+        status: "idle",
+        page: 1,
+        error: null
     },
     reducers: {
         incrementSearchPage: (state) => {
@@ -15,22 +15,25 @@ const searchPhotosSlice = createSlice({
         },
         clearSearchPhotos: (state) => {
             state.data = []
-            state.status = 'idle'
-            state.error = null
+            state.page = 1
         }
     },
     extraReducers: (builder) => {
         builder
             .addCase(GetPhotos.pending, (state) => {
-                state.status = 'loading'
+                state.status = "loading"
             })
             .addCase(GetPhotos.fulfilled, (state, action) => {
-                state.status = 'succeeded'
-                state.data = [...state.data, ...action.payload]
+                state.status = "fulfilled"
+                const uniquePhotos = action.payload.filter(
+                    (photo, index, self) =>
+                        self.findIndex((p) => p.id === photo.id) === index && photo.id != null
+                )
+                state.data = [...state.data, ...uniquePhotos]
             })
             .addCase(GetPhotos.rejected, (state, action) => {
-                state.status = 'failed'
-                state.error = action.error.message || 'Failed to fetch photos.'
+                state.status = "failed"
+                state.error = action.error.message || "Failed to fetch photos."
             })
     },
 })
