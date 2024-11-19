@@ -32,7 +32,6 @@ const LikedPage = () => {
 
     const handleImageClick = (photo) => {
         setSelectedImage(photo)
-        console.log(photo)
         setIsModalOpen(true)
     }
 

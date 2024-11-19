@@ -1,3 +1,11 @@
+import { saveAs } from 'file-saver'
+import { useDispatch, useSelector } from "react-redux"
+import { NavLink } from 'react-router-dom'
+import { useEffect, useState } from "react"
+import { getPhotosData, getPhotosStatus, getPhotosPage, aumentPage, resetPhotos } from "../features/photos/photosSlice"
+import { GetPhotos } from "../features/photos/photosThunk"
+import { searchPhotosData, getSearchPhotosPage, clearSearchPhotos, incrementSearchPage } from "../features/photos/searchPhotosSlice"
+
 import Footer from "../components/homePage/Footer"
 import styles from './HomePage.module.scss'
 
@@ -8,16 +16,6 @@ import heart from '../assets/heart.png'
 import redHeart from '../assets/redHeart.png'
 import downloadImg from '../assets/download.png'
 import close from '../assets/x.png'
-
-import { saveAs } from 'file-saver'
-
-import { useDispatch, useSelector } from "react-redux"
-import { NavLink } from 'react-router-dom'
-import { useEffect, useState } from "react"
-
-import { getPhotosData, getPhotosStatus, getPhotosPage, aumentPage, resetPhotos } from "../features/photos/photosSlice"
-import { GetPhotos } from "../features/photos/photosThunk"
-import { searchPhotosData, getSearchPhotosPage, clearSearchPhotos, incrementSearchPage } from "../features/photos/searchPhotosSlice"
 
 const HomePage = () => {
     const dispatch = useDispatch()
@@ -45,7 +43,7 @@ const HomePage = () => {
         } else if (photosStatus === "rejected") {
             alert("Error")
         } else if (photosStatus === "pending") {
-
+            setIsLoading(true)
         }
     }, [photosStatus])
 
@@ -66,12 +64,10 @@ const HomePage = () => {
     const handleShowMore = () => {
         if (isSearching) {
             const nextPage = searchPage + 1
-            console.log(nextPage + ": paginacion buscando")
             dispatch(incrementSearchPage())
             dispatch(GetPhotos({ page: nextPage, query: userText }))
         } else {
             const nextPage = photosPage + 1
-            console.log(nextPage + ": paginacion sin buscar")
             dispatch(aumentPage())
             dispatch(GetPhotos({ page: nextPage, query: "" }))
         }
@@ -141,6 +137,8 @@ const HomePage = () => {
 
                 {isLoading ? (
                     <p>Loading...</p>
+                ) : displayedPhotos.length === 0 ? (
+                    <p>No results found.</p>
                 ) : (
                     <>
                         <div className={styles.photosContainer}>

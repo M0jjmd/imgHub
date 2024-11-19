@@ -25,7 +25,10 @@ const photosSlice = createSlice({
             })
             .addCase(GetPhotos.fulfilled, (state, action) => {
                 state.status = "fulfilled"
-                state.photosData = [...state.photosData, ...action.payload]
+                const uniquePhotos = action.payload.filter(
+                    (photo) => !state.photosData.some((existingPhoto) => existingPhoto.id === photo.id)
+                )
+                state.photosData = [...state.photosData, ...uniquePhotos]
             })
             .addCase(GetPhotos.rejected, (state, action) => {
                 state.status = "failed"
