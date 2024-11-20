@@ -33,9 +33,9 @@ const photosSlice = createSlice({
             .addCase(GetPhotos.rejected, (state, action) => {
                 state.status = "failed"
                 state.error = action.error.message
-            });
+            })
     },
-});
+})
 
 export const { aumentPage, resetPhotos } = photosSlice.actions
 
