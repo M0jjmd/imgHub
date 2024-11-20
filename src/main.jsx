@@ -7,7 +7,10 @@ import LikedPage from './pages/LikedPage.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import store from './app/store.js'
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const rootElement = document.getElementById('root')
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement)
+  root.render(
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
@@ -16,4 +19,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </Routes>
       </BrowserRouter>
     </Provider>
-)
+  )
+}

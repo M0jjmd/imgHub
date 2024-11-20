@@ -7,6 +7,6 @@ const store = configureStore({
         photos: photosReducer,
         searchPhotos: searchPhotosReducer,
     },
-});
+})
 
 export default store
